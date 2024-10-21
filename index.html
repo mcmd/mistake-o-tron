@@ -81,7 +81,7 @@
                 x => {
                     all.push(x);
                     status("Fetching : " + all.length + " of " + total);
-                    puzzles = puzzles.concat((new bundle.Analysis(x)).puzzles(player));
+                    puzzles = (new bundle.Analysis(x)).aggregateMistakes(puzzles.concat((new bundle.Analysis(x)).puzzles(player)));
                     recompute();
                 },
                 () => { });
@@ -94,7 +94,7 @@
                 .filter(bundle.colour(document.getElementById('colour').value))
                 .filter(bundle.phase(document.getElementById('phase').value));
             status("From " + all.length + " analysed games found " + puzzles.length + " suboptimal moves, filtered to " + filtered.length);
-            filtered.sort((a, b) => a.analysis.halfMove - b.analysis.halfMove);
+            filtered.sort((a, b) => b.analysis.occurrences - a.analysis.occurrences);
             return filtered;
         }
 

@@ -8,7 +8,27 @@ export class Analysis {
   constructor(gameAnalysis) {
     this.gameAnalysis = gameAnalysis;
   }
-  
+
+  aggregateMistakes(puzzles: Puzzle[]): Puzzle[] {
+    const mistakeMap = new Map();
+
+    puzzles.forEach(puzzle => {
+      const key = `${puzzle.analysis.fen}-${puzzle.analysis.move.from}-${puzzle.analysis.move.to}`;
+      if (!mistakeMap.has(key)) {
+        mistakeMap.set(key, { puzzle, occurrences: 0, games: [] });
+      }
+      const entry = mistakeMap.get(key);
+      entry.occurrences += 1;
+      entry.games.push(puzzle.analysis.id);
+    });
+
+    return Array.from(mistakeMap.values()).map(entry => {
+      entry.puzzle.analysis.occurrences = entry.occurrences;
+      entry.puzzle.analysis.games = entry.games;
+      return entry.puzzle;
+    });
+  }
+
   puzzles(player: string): Puzzle[] {
     const chess = new Chess()
     var fens : any[] = []
@@ -30,9 +50,11 @@ export class Analysis {
     })
     var whiteUser = this.gameAnalysis.players.white.user
     var playerColour: string = (whiteUser && (whiteUser.id == player)) ? 'w':'b'
-    return this.gameAnalysis.analysis = this.gameAnalysis.analysis
+    const puzzles = this.gameAnalysis.analysis = this.gameAnalysis.analysis
       .filter(x => x.judgment)
       .filter(x => x.move.color == playerColour)
-      .map(x => new Puzzle(x))
+      .map(x => new Puzzle(x));
+
+    return this.aggregateMistakes(puzzles);
   }
 }

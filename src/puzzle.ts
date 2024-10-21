@@ -37,7 +37,7 @@ export class Puzzle {
   }
   
   render() {
-    
+    const occurrencesText = this.analysis.occurrences ? ` (made ${this.analysis.occurrences} times)` : '';
     return h(this.pathFromStatus("section.blue.merida"), [
       h("div.cg-board-wrap", {
         hook: {
@@ -55,7 +55,7 @@ export class Puzzle {
               target: "_blank"
             }
           },
-          this.analysis.judgment.name
+          `${this.analysis.judgment.name}${occurrencesText}`
         )
       )
     ])
