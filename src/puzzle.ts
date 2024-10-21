@@ -10,12 +10,14 @@ export class Puzzle {
   private readonly chess
   private readonly config
   private status
+  occurrences: number; // P0848
   
   constructor(analysis) {
     this.analysis = analysis
     this.chess = new Chess(this.analysis.fen)
     this.config = this.initialiseConfig()
     this.status = ''
+    this.occurrences = 0; // P0848
   }
 
   initialiseConfig() {
